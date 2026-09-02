@@ -1,9 +1,8 @@
 import { inngest } from "@/lib/inngest";
 
 export const processAIEvent = inngest.createFunction(
-  { id: "process-ai-event" },
-  { event: "app/ai.process" },
-  async ({ event, step }) => {
+  { id: "process-ai-event", event: "app/ai.process" } as any,
+  async ({ event, step }: any) => {
     
     // Step 1: Simulate extraction/preparation
     await step.sleep("simulate-prep", "1s");
@@ -15,16 +14,14 @@ export const processAIEvent = inngest.createFunction(
 
       const prompt = `
         You are an AI Orchestration agent evaluating incoming business events.
-        Event Type: ${event.data.type}
-        Payload: "${event.data.payload}"
+        Event Type: ${event?.data?.type || 'unknown'}
+        Payload: "${event?.data?.payload || ''}"
         
         Evaluate this event and determine:
-        1. What action should be taken? (Keep it concise, 1-2 sentences. Be specific as if interacting with downstream APIs).
-        2. Assign a confidence score from 0-100 based on how safe it is to execute this autonomously. 
-           - Routine inquiries, clear lead behaviors: > 90
-           - Complex quotes, ambiguous project blockers, custom logic: < 80
+        1. What action should be taken?
+        2. Assign a confidence score from 0-100 based on how safe it is to execute autonomously.
         
-        Respond ONLY with a valid JSON object matching this structure exactly (no markdown formatting, just raw JSON):
+        Respond ONLY with a valid JSON object matching this structure exactly:
         {
           "confidence": number,
           "action": "string"
@@ -63,8 +60,8 @@ export const processAIEvent = inngest.createFunction(
             'Authorization': `Bearer ${supabaseKey}`
           },
           body: JSON.stringify({
-            event_type: event.data.type,
-            input_payload: event.data.payload,
+            event_type: event?.data?.type || 'unknown',
+            input_payload: event?.data?.payload || '',
             confidence: aiResult.confidence,
             action: aiResult.action,
             status: finalStatus
