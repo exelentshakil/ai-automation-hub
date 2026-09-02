@@ -7,7 +7,7 @@ import { TrafficTracker } from "@/components/TrafficTracker";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "AI Automation Hub",
+  title: "AI Automation Hub | Live Demo",
   description: "Confidence-Routed AI Orchestration Demo",
 };
 
@@ -18,8 +18,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased bg-[var(--color-background)] text-[var(--color-foreground)] min-h-screen flex flex-col`}>
+      <body className={`${inter.variable} font-sans antialiased bg-[var(--color-background)] text-[var(--color-foreground)] min-h-screen flex flex-col relative`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          
+          {/* Ambient Background Glow (Stripe/Vercel style) */}
+          <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 flex justify-center">
+            <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[#635bff]/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen dark:bg-[#87bbfd]/10" />
+            <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] rounded-full bg-[#00d924]/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen dark:bg-[#00d924]/5" />
+          </div>
+
           <TrafficTracker />
           <main className="flex-1">
             {children}
