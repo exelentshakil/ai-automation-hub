@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bot, Mail, MessageSquare, Zap, Activity, CheckCircle2, AlertCircle, RefreshCw, Send, ArrowRight, ShieldCheck } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Footer } from '@/components/Footer';
@@ -20,30 +20,60 @@ interface LogEvent {
 export default function Home() {
   const [activeTab, setActiveTab] = useState<EventType>('email');
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [customInput, setCustomInput] = useState('');
-  
-  const [logs, setLogs] = useState<LogEvent[]>([
-    {
-      id: 'log-1',
-      timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      type: 'email',
-      input: "Inquiry: We need an AI system to automate our end-to-end email communication. Can we see a demo?",
-      confidence: 96,
-      action: "Drafted personalized response & scheduled follow-up sequence.",
-      status: 'autonomous'
-    },
-    {
-      id: 'log-2',
-      timestamp: new Date(Date.now() - 1000 * 60 * 2),
-      type: 'project',
-      input: "Status Update: The API integration for the payment gateway is blocked because the sandbox credentials expired.",
-      confidence: 92,
-      action: "Predicted 3-day bottleneck. Assigned task to Backend Lead & generated status report.",
-      status: 'autonomous'
-    }
-  ]);
+  const [logs, setLogs] = useState<LogEvent[]>([]);
 
-  // Perfectly mapped to his exact Upwork brief
+  // Fetch initial logs from Supabase
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const res = await fetch('/api/orchestrate/logs');
+        const data = await res.json();
+        
+        if (data.logs && data.logs.length > 0) {
+          setLogs(data.logs.map((l: any) => ({
+            id: l.id,
+            timestamp: new Date(l.created_at),
+            type: l.event_type as EventType,
+            input: l.input_payload,
+            confidence: l.confidence,
+            action: l.action,
+            status: l.status
+          })));
+        } else {
+          // Fallback UI if DB is empty or unconfigured
+          setLogs([
+            {
+              id: 'log-1',
+              timestamp: new Date(Date.now() - 1000 * 60 * 5),
+              type: 'email',
+              input: "Inquiry: We need an AI system to automate our end-to-end email communication. Can we see a demo?",
+              confidence: 96,
+              action: "Drafted personalized response & scheduled follow-up sequence.",
+              status: 'autonomous'
+            },
+            {
+              id: 'log-2',
+              timestamp: new Date(Date.now() - 1000 * 60 * 2),
+              type: 'project',
+              input: "Status Update: The API integration for the payment gateway is blocked because the sandbox credentials expired.",
+              confidence: 45,
+              action: "Flagged for manual review. AI unsure if this requires an executive meeting or just a Slack update.",
+              status: 'review'
+            }
+          ]);
+        }
+      } catch (e) {
+        console.error('Failed to load logs', e);
+      } finally {
+        setIsInitialLoad(false);
+      }
+    };
+    
+    fetchLogs();
+  }, []);
+
   const DEFAULT_EVENTS: Record<EventType, string> = {
     email: "New Inquiry: Hi, we are looking for a generative AI solution to automate our email responses and handle follow-ups. We handle 500+ emails a day. Can we schedule a demo?",
     lead: "Lead Event: Enterprise CTO downloaded 'AI Automation Case Study', attended our marketing webinar, and viewed the pricing page. Score threshold crossed.",
@@ -73,8 +103,8 @@ export default function Home() {
       }
       
       const newEvent: LogEvent = {
-        id: `log-${Date.now()}`,
-        timestamp: new Date(),
+        id: data.id || `log-${Date.now()}`,
+        timestamp: data.created_at ? new Date(data.created_at) : new Date(),
         type: activeTab,
         input: payload,
         confidence: data.confidence,
@@ -102,7 +132,6 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       
-      {/* Fixed Header with Dark Mode Toggle properly aligned */}
       <header className="border-b border-[var(--color-border)] glass-panel sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -115,9 +144,8 @@ export default function Home() {
           <div className="flex items-center gap-4">
              <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-[var(--color-primary)] px-3 py-1.5 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 shadow-sm">
                 <div className="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse" />
-                Live AI Connected
+                Live AI & Supabase Connected
              </div>
-             {/* Themed Toggle nicely placed above the fold */}
              <ThemeToggle />
           </div>
         </div>
@@ -125,7 +153,6 @@ export default function Home() {
 
       <main className="max-w-6xl mx-auto px-6 pt-16 pb-24">
         
-        {/* Hero Section */}
         <div className="max-w-4xl mb-16 text-center mx-auto flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-card)] shadow-sm text-[var(--color-muted-foreground)] text-sm font-medium mb-8">
             <ShieldCheck className="w-4 h-4 text-[var(--color-primary)]" /> 
@@ -142,10 +169,8 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Dashboard UI */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
           
-          {/* Left Column: Input Simulator */}
           <div className="lg:col-span-7">
             <div className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] stripe-shadow overflow-hidden flex flex-col h-[560px] transition-all">
               
@@ -176,7 +201,6 @@ export default function Home() {
                 </div>
                 
                 <div className="relative flex-1 mb-6">
-                  {/* Fixed Contrast Issue: Using explicit CSS variable for background */}
                   <textarea
                     value={customInput || DEFAULT_EVENTS[activeTab]}
                     onChange={(e) => setCustomInput(e.target.value)}
@@ -200,7 +224,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column: Execution Feed */}
           <div className="lg:col-span-5">
             <div className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] stripe-shadow h-[560px] flex flex-col">
               <div className="p-5 border-b border-[var(--color-border)] flex items-center gap-3 bg-[var(--color-muted)]/30">
@@ -210,7 +233,11 @@ export default function Home() {
                 <h3 className="font-semibold text-base text-[var(--color-foreground)]">Orchestration Feed</h3>
               </div>
               <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-[var(--color-background)]/30">
-                {logs.map((log) => (
+                {isInitialLoad ? (
+                  <div className="flex items-center justify-center h-full text-[var(--color-muted-foreground)]">
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  </div>
+                ) : logs.map((log) => (
                   <div key={log.id} className="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] space-y-4 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden group">
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-border)] group-hover:bg-[var(--color-primary)] transition-colors" />
                     
