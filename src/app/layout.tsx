@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import { TrafficTracker } from "@/components/TrafficTracker";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -27,7 +26,14 @@ export default function RootLayout({
             <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] rounded-full glow-bg-2 blur-[120px] mix-blend-multiply opacity-70" />
           </div>
 
-          <TrafficTracker />
+          {/* traffic hub pixel -- see exelentshakil/demo-traffic */}
+          <img
+            src="https://demo-traffic.vercel.app/api/px?p=upwork-ai-automation-hub"
+            alt=""
+            width={1}
+            height={1}
+            style={{ position: "absolute", width: 1, height: 1, opacity: 0 }}
+          />
           <main className="flex-1">
             {children}
           </main>
