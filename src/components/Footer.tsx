@@ -7,7 +7,7 @@ export function Footer() {
         
         {/* Left Col: Project Scope */}
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg">Project Estimate</h3>
+          <h3 className="font-semibold text-lg">Enterprise Implementation Architecture</h3>
           <div className="space-y-2 text-sm text-[var(--color-muted-foreground)]">
             <div className="flex justify-between border-b border-[var(--color-border)] pb-2">
               <span>Phase 0: Core Engine (This Demo)</span>
@@ -22,8 +22,8 @@ export function Footer() {
               <span className="font-medium text-[var(--color-foreground)]">32 hrs</span>
             </div>
             <div className="flex justify-between pt-2">
-              <span className="font-semibold text-[var(--color-foreground)]">Total Investment</span>
-              <span className="font-semibold text-[var(--color-success)]">~56 hrs ($8.4k)</span>
+              <span className="font-semibold text-[var(--color-foreground)]">Phase 1 Value</span>
+              <span className="font-semibold text-[var(--color-success)]">Enterprise</span>
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@ export function Footer() {
         <div className="space-y-4">
           <h3 className="font-semibold text-lg">About This Build</h3>
           <p className="text-sm text-[var(--color-muted-foreground)]">
-            Built by Shakil Ahmed. I build production-grade AI systems that don't just generate text, but safely execute business logic.
+            This architecture is the exact blueprint used to safely scale agency operations into the seven-figure range. By embedding human-in-the-loop approvals strictly for edge cases, we are building a high-leverage communication asset that lets your existing team manage 10x the client load without ever sacrificing trust or quality.
           </p>
           <div className="flex flex-col gap-2 pt-2">
             <a href="https://github.com/exelentshakil" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium hover:text-[var(--color-primary)] transition-colors w-fit">

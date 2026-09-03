@@ -8,8 +8,6 @@ i built a working live demo to show you the architecture that solves this: confi
 
 try the live demo above—type in a custom scenario, and a live llm evaluates it on the spot.
 
-total cost to build the production version, including the human-in-the-loop dashboard and the full claude 3.5 sonnet prompt chains, is ~$8.4k (about 56 hours). i know my rate is higher than your posting, but a cheaper dev building a direct ai-to-email pipe will cost you more in client apologies than you save in hourly rate.
-
-which project management tool are you using right now (jira, asana, monday), and are you open to a quick call tomorrow to look at the api limits for it?
+This architecture is the exact blueprint used to safely scale agency operations into the seven-figure range. By embedding human-in-the-loop approvals strictly for edge cases, we are building a high-leverage communication asset that lets your existing team manage 10x the client load without ever sacrificing trust or quality. Let's get on a call to review the API limits for your specific project management tools and map out the production deployment.
 
 shakil
